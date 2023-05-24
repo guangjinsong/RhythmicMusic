@@ -13,6 +13,6 @@ public class Music {
     private String singer;
     private String time;
     private String url;
-    private int userId;
+    private int userid;
 
 }

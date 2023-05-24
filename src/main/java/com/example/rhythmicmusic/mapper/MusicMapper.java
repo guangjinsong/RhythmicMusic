@@ -1,5 +1,6 @@
 package com.example.rhythmicmusic.mapper;
 
+import com.example.rhythmicmusic.model.User;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,5 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface MusicMapper {
 
     // 插入音乐
-    public int insert(String title, String singer, String time, String url, String userid);
+    public int insert(String title, String singer, String time, String url, Integer userid);
+    public User selectByTitleAndSinger(String title, String singer);
 }
