@@ -68,6 +68,7 @@ public class MusicController {
         File dest = new File(path);
         if (!dest.exists()) {
             dest.mkdir();
+
         }
         try {
             file.transferTo(dest);
