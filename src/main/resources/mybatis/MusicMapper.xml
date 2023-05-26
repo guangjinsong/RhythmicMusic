@@ -6,7 +6,14 @@
         values(#{title}, #{singer}, #{time}, #{url}, #{userid})
 
     </insert>
+    <delete id="deleteMusicById">
+        delete from music where id=#{id}
+    </delete>
     <select id="selectByTitleAndSinger" resultType="com.example.rhythmicmusic.model.User">
         select * from music where title = #{title} and singer=#{singer}
+    </select>
+
+    <select id="findMusicById" resultType="com.example.rhythmicmusic.model.Music">
+        select * from music where id=#{id}
     </select>
 </mapper>

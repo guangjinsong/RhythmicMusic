@@ -7,6 +7,7 @@ import com.example.rhythmicmusic.tools.ResponseBodyMessage;
 import org.apache.ibatis.binding.BindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -51,7 +53,7 @@ public class MusicController {
         String title = fileName.substring(0, dotOfIndex); // 音乐名
         User user = (User)httpSession.getAttribute(Constant.USERINFO_SESSION_KEY);
         int userid = user.getId();  // userid
-        String url = "/music/get?path="+title;  // url
+        String url = "/music/get?path="+title;  // url 存进去的时候为了节省空间不需要加“.mp3”后缀
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");  // time
         String time = simpleDateFormat.format(new Date());
 
@@ -90,7 +92,33 @@ public class MusicController {
             dest.delete();
             return new ResponseBodyMessage<>(-1, "数据库上传失败", false);
         }
+    }
 
+    // 获取音乐
+    @RequestMapping("/get")
+    public ResponseEntity<byte[]> get(String path) {
+        File file = new File(SAVE_PATH + "/" + path);
+        byte[] bytes = null;
+        try {
+            bytes = Files.readAllBytes(file.toPath());
+            if (bytes == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            return ResponseEntity.ok(bytes);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    // 删除音乐
+    // 1. 查询该音乐是否存在
+    // 2. 如果存在，删除
+    @RequestMapping("/delete")
+    public ResponseBodyMessage<Boolean> delete() {
 
     }
+
+
+
 }
