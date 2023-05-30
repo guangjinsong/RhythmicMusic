@@ -4,6 +4,8 @@ import com.example.rhythmicmusic.model.Music;
 import com.example.rhythmicmusic.model.User;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * @author sgj
  * @create 2023-05-23 20:32
@@ -23,4 +25,10 @@ public interface MusicMapper {
 
     // 删除音乐
     int deleteMusicById(int id);
+
+    // 查询所有的音乐
+    List<Music> findMusic();
+
+    // 查询单首音乐
+    List<Music> findMusicByName(String musicName);
 }

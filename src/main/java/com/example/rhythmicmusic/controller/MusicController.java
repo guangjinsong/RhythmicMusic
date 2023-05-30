@@ -1,6 +1,7 @@
 package com.example.rhythmicmusic.controller;
 
 import com.example.rhythmicmusic.mapper.MusicMapper;
+import com.example.rhythmicmusic.model.Music;
 import com.example.rhythmicmusic.model.User;
 import com.example.rhythmicmusic.tools.Constant;
 import com.example.rhythmicmusic.tools.ResponseBodyMessage;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author sgj
@@ -115,10 +117,47 @@ public class MusicController {
     // 1. 查询该音乐是否存在
     // 2. 如果存在，删除
     @RequestMapping("/delete")
-    public ResponseBodyMessage<Boolean> delete() {
+    public ResponseBodyMessage<Boolean> deleteMusicById(@RequestParam String id) {
+        // 1. 先检查这个音乐是否存在
+        int iid = Integer.parseInt(id);
+        Music music = musicMapper.findMusicById(iid);
+        if (music == null) {
+            return new ResponseBodyMessage<>(-1, "没有你要删除的音乐", false);
+        } else {
+            // 2. 如果存在要进行删除
+            // 2.1 删除数据库
+            int ret = musicMapper.deleteMusicById(iid);
+            if (ret == 1) {
+                // 2.2 删除服务器上的数据
+                String nameOfMusic = music.getTitle();
+                File file = new File(SAVE_PATH + "/" + nameOfMusic + ".mp3");
+                System.out.println(file.getPath());
+                if (file.delete()) {
+                    return new ResponseBodyMessage<>(0, "服务器当中的音乐删除成功", true);
+                } else {
+                    return new ResponseBodyMessage<>(-1, "服务器当中的音乐没有删除成功", false);
+
+                }
+
+            } else {
+                return new ResponseBodyMessage<>(-1, "数据库当中的音乐没有删除成功", false);
+            }
+        }
 
     }
 
+    // 批量进行删除
+    @RequestMapping("/deleteSel")
+    public ResponseBodyMessage<Boolean> deleteSelMusic(@RequestParam("id[]") List<Integer> id) {
+        for (int i = 0; i < id.size(); i++) {
+            ResponseBodyMessage<Boolean> res = deleteMusicById(Integer.toString(id.get(i)));
+            if (res.getStatus() < 0) {
+                return new ResponseBodyMessage<>(-1, "音乐删除失败", false);
+            }
+        }
+       return new ResponseBodyMessage<>(0, "音乐删除成功", true);
+
+    }
 
 
 }
