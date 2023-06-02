@@ -159,5 +159,20 @@ public class MusicController {
 
     }
 
+    // 查询音乐
+    // 支持模糊查询
+    // 支持空参查询, 即查询所有的音乐
+    @RequestMapping("/findmusic")
+    public ResponseBodyMessage<List<Music>> findMusic(@RequestParam(required = false) String musicName) { // required = false: 默认是true, 这里设置为false, 表明可以传空
+        List<Music> musicList = null;
+        if (musicName == null) {
+            musicList = musicMapper.findMusic();
+        } else {
+            musicList = musicMapper.findMusicByName(musicName);
+        }
+
+        return new ResponseBodyMessage<>(0, "查询到了相关音乐", musicList);
+    }
+
 
 }

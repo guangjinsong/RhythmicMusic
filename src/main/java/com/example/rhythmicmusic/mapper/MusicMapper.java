@@ -26,9 +26,9 @@ public interface MusicMapper {
     // 删除音乐
     int deleteMusicById(int id);
 
-    // 查询所有的音乐
+    // 查询所有的音乐(支持传入的参数为空)
     List<Music> findMusic();
 
-    // 查询单首音乐
+    // 查询单首音乐(支持模糊查询)
     List<Music> findMusicByName(String musicName);
 }
