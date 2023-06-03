@@ -2,11 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.rhythmicmusic.mapper.LoveMusicMapper">
     <insert id="insertLoveMusic">
-        insert into lovermusic (user_id, music_id) values (#{userId}, #{musicId})
+        insert into lovemusic (user_id, music_id) values (#{userId}, #{musicId})
     </insert>
+    <delete id="deleteLoveMusic">
+        delete from lovemusic where user_id=#{userid} and music_id=#{musicId}
+    </delete>
 
+    <select id="findLoveMusicByUserIdAndMusicId" resultType="com.example.rhythmicmusic.model.Music">
+        select * from lovemusic where user_id=#{userId} and music_id=#{musicId}
+    </select>
 
-    <select id="findLoveMusic" resultType="com.example.rhythmicmusic.model.Music">
-        select * from lovermusic where user_id=#{userId} and music_id=#{musicId}
+    <select id="findLoveMusicByUserId" resultType="com.example.rhythmicmusic.model.Music">
+        select m.* from lovemusic lm, music m where lm.music_id=m.id and lm.user_id=#{userId}
+    </select>
+
+    <select id="findLoveMusicByKeyAndUID" resultType="com.example.rhythmicmusic.model.Music">
+        select m.* from lovemusic lm, music m where lm.music_id=m.id and lm.user_id=#{userId}
+        and title LIKE CONCAT('%', '一生有你-水木年华', '%')
     </select>
 </mapper>
