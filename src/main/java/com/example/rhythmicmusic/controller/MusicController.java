@@ -1,5 +1,6 @@
 package com.example.rhythmicmusic.controller;
 
+import com.example.rhythmicmusic.mapper.LoveMusicMapper;
 import com.example.rhythmicmusic.mapper.MusicMapper;
 import com.example.rhythmicmusic.model.Music;
 import com.example.rhythmicmusic.model.User;
@@ -37,6 +38,9 @@ public class MusicController {
 
     @Autowired
     private MusicMapper musicMapper;
+
+    @Autowired
+    private LoveMusicMapper loveMusicMapper;
 
     @RequestMapping("/upload")
     public ResponseBodyMessage<Boolean> insertMusic(@RequestParam String singer,
@@ -133,9 +137,11 @@ public class MusicController {
                 File file = new File(SAVE_PATH + "/" + nameOfMusic + ".mp3");
                 System.out.println(file.getPath());
                 if (file.delete()) {
-                    return new ResponseBodyMessage<>(0, "服务器当中的音乐删除成功", true);
+                    // 2.3 删除收藏表中的音乐
+                    loveMusicMapper.deleteLoveMusicByMusicId(iid);
+                    return new ResponseBodyMessage<>(0, "数据库、服务器和收藏表当中的音乐删除成功", true);
                 } else {
-                    return new ResponseBodyMessage<>(-1, "服务器当中的音乐没有删除成功", false);
+                    return new ResponseBodyMessage<>(-1, "数据库当中的音乐删除成功，服务器当中的音乐没有删除成功", false);
 
                 }
 

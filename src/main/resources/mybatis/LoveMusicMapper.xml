@@ -5,7 +5,10 @@
         insert into lovemusic (user_id, music_id) values (#{userId}, #{musicId})
     </insert>
     <delete id="deleteLoveMusic">
-        delete from lovemusic where user_id=#{userid} and music_id=#{musicId}
+        delete from lovemusic where user_id=#{userId} and music_id=#{musicId}
+    </delete>
+    <delete id="deleteLoveMusicByMusicId">
+        delete from lovemusic where music_id=#{musicId}
     </delete>
 
     <select id="findLoveMusicByUserIdAndMusicId" resultType="com.example.rhythmicmusic.model.Music">

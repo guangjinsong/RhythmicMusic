@@ -27,4 +27,8 @@ public interface LoveMusicMapper {
 
     // 取消收藏
     int deleteLoveMusic(int userId, int musicId);
+
+    // 根据musicId取消收藏
+    // 返回值是指取消收藏音乐的条数
+    int deleteLoveMusicByMusicId(int musicId);
 }

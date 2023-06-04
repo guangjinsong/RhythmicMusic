@@ -50,7 +50,7 @@ public class LoveMusicController {
 
     @RequestMapping("/findlovemusic")
     public ResponseBodyMessage<List<Music>> findLoveMusic(@RequestParam(required = false) String musicName, HttpServletRequest request) {
-        // 1. 检查是否登录
+        // 检查是否登录
         HttpSession httpSession = request.getSession(false); // false的意思是,如果没有session就不创建
         if (null == httpSession || null == httpSession.getAttribute(Constant.USERINFO_SESSION_KEY)) {
             System.out.println("没有登录");
@@ -72,5 +72,27 @@ public class LoveMusicController {
 
         return new ResponseBodyMessage<>(1, "查询成功", ans);
     }
+
+    @RequestMapping("/deletelovemusic")
+    public ResponseBodyMessage<Boolean> deleteLoveMusic(@RequestParam String id, HttpServletRequest request) {
+        int musicId = Integer.parseInt(id);
+        // 检查是否登录
+        HttpSession httpSession = request.getSession(false); // false的意思是,如果没有session就不创建
+        if (null == httpSession || null == httpSession.getAttribute(Constant.USERINFO_SESSION_KEY)) {
+            System.out.println("没有登录");
+            return new ResponseBodyMessage<>(-1, "请登录后上传", null);
+        }
+
+        User user = (User)httpSession.getAttribute(Constant.USERINFO_SESSION_KEY);
+        int userId = user.getId();
+
+        int ret = loveMusicMapper.deleteLoveMusic(userId, musicId);
+        if (ret == 1) {
+            return new ResponseBodyMessage<>(0, "取消收藏成功", true);
+        } else {
+            return new ResponseBodyMessage<>(-1, "取消收藏失败", false);
+        }
+    }
+
 
 }
