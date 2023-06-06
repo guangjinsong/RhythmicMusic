@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +46,8 @@ public class MusicController {
     @RequestMapping("/upload")
     public ResponseBodyMessage<Boolean> insertMusic(@RequestParam String singer,
                                                     @RequestParam("filename") MultipartFile file,
-                                                    HttpServletRequest request) {
+                                                    HttpServletRequest request,
+                                                    HttpServletResponse resp) {
         // 1. 检查是否登录
         HttpSession httpSession = request.getSession(false); // false的意思是,如果没有session就不创建
         if (null == httpSession || null == httpSession.getAttribute(Constant.USERINFO_SESSION_KEY)) {
@@ -89,7 +91,8 @@ public class MusicController {
         try {
             int ret = musicMapper.insert(title, singer, time, url, userid);
             if (ret == 1) {
-                // 这里应该跳转到音乐列表页面
+                // 跳转到音乐列表页面
+                resp.sendRedirect("/list.html");
                 return new ResponseBodyMessage<>(0, "数据库上传成功", true);
             } else {
                 return new ResponseBodyMessage<>(-1, "数据库上传失败", false);
@@ -97,6 +100,8 @@ public class MusicController {
         } catch (BindingException b) {
             dest.delete();
             return new ResponseBodyMessage<>(-1, "数据库上传失败", false);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
